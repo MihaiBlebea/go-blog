@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ .Title }}</title>
+
+        {{ template "head" }}
+    </head>
+    <body>
+        <section class="bg-red">
+            {{ template "navigation" }}
+
+            <div class="container my-5">
+                <div class="fit-content mb-5">
+                    <h1 class="z-index-top position-relative mb-0 text-white">404 - Page not found</h1>
+                    <div class="highlight-red highlight"></div>
+                </div>
+            </div>
+        </section>
+
+        {{ template "footer" }}
+    </body>
+</html>

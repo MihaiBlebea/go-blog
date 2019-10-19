@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ .Title }}</title>
+
+        {{ template "head" }}
+    </head>
+    <body>
+        <section class="bg-purple">
+            {{ template "navigation" }}
+            <div class="container my-5">
+                <div class="fit-content">
+                    <h1 class="z-index-top position-relative mb-0 text-white">Hello from the contact</h1>
+                    <div class="highlight-purple highlight"></div>
+                </div>
+            </div>
+        </section>
+
+        {{ template "footer" }}
+    </body>
+</html>

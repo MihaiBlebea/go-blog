@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ .Title }}</title>
+
+        {{ template "head" }}
+    </head>
+    <body>
+        <section class="bg-red">
+            {{ template "navigation" }}
+        </section>
+
+        <div class="container my-5">
+
+            <div class="fit-content mb-5">
+                <h1 class="z-index-top position-relative mb-0">{{ .Title }}</h1>
+                <div class="highlight-white highlight"></div>
+            </div>
+
+            <img class="mb-3" src="/assets/{{ .FeatureImage }}">
+
+            {{ .Body }}
+
+            <hr>
+            <div class="row">
+                <div class="col">
+                    <p>Category {{.Category }} </p>
+                </div>
+                <div class="col">
+                    <p>Author {{.Author }} </p>
+                </div>
+                <div class="col">
+                    <p>Published {{ .CreatedAt }}</p>
+                </div>
+            </div>
+        </div>
+
+        {{ template "footer" }}
+    </body>
+</html>

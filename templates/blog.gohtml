@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>{{ .Title }}</title>
+
+        {{ template "head" }}
+    </head>
+    <body>
+        <section class="bg-red">
+            {{ template "navigation" }}
+        </section>
+
+        <div class="container my-5">
+            <div class="fit-content mb-5">
+                <h1 class="z-index-top position-relative mb-0">Hello from the contact</h1>
+                <div class="highlight-white highlight"></div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-8">
+                    {{ range $article := .Articles }}
+                        <div class="mb-3">
+                            {{ template "article-card" $article }}
+                        </div>
+                    {{ end }}
+                </div>
+            </div>
+
+        </div>
+
+        {{ template "footer" }}
+    </body>
+</html>

@@ -26,7 +26,7 @@ func (ar *Article) Render(w io.Writer) error {
 }
 
 func (ar *Article) CreatedAt() string {
-	return ar.Created.Format("2006-Jan-02")
+	return ar.Created.Format("2006 Jan 02")
 }
 
 func (ar *Article) AddSlug(slug string) {

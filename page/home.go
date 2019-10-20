@@ -30,7 +30,7 @@ func (h *Home) Render(w io.Writer) error {
 
 func NewHome() *Home {
 	page := New()
-	positions, err := loadPositionsFromFile("./content/pages/positions.json")
+	positions, err := loadPositionsFromFile("./content/configs/positions.json")
 	if err != nil {
 		log.Panic(err)
 	}

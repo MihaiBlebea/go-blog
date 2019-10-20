@@ -8,17 +8,8 @@
         <a href="/blog/{{ .Slug }}">
             <h3>{{ .Title }}</h3>
         </a>
-        <div class="row">
-            <div class="col">
-                <small class="text-muted">Category {{ .Category }}</small>
-            </div>
-            <div class="col">
-                <small class="text-muted">Author {{ .Author }}</small>
-            </div>
-            <div class="col">
-                <small class="text-muted">Published {{ .CreatedAt }}</small>
-            </div>
-        </div>
+        
+        <small>{{ .Category }} | {{ .Author }} @ {{ .CreatedAt }}</small>
 
     </div>
 </div>

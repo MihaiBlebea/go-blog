@@ -3,6 +3,7 @@ package handler
 import (
 	"fmt"
 	"go-blog/page"
+	"time"
 
 	"html/template"
 	"io/ioutil"
@@ -31,26 +32,16 @@ func (h *Handler) GetHomepage(w http.ResponseWriter, r *http.Request, _ httprout
 }
 
 func (h *Handler) GetBlog(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+	startTime := time.Now()
+
 	blg := page.NewBlog()
 
-	files, err := ioutil.ReadDir("./content")
-
-	for _, file := range files {
-		content, err := ioutil.ReadFile("./content/" + file.Name())
-		if err != nil {
-			fmt.Println(err)
-			continue
-		}
-
-		slug := strings.Replace(file.Name(), "_", "-", -1)
-		slug = strings.Replace(slug, ".md", "", -1)
-
-		art := page.NewArticle(content)
-		art.AddSlug(slug)
-
-		blg.AddArticle(art)
+	articles, err := loadArticlesFromFolder("./content")
+	if err != nil {
+		log.Panic(err)
 	}
 
+	blg.AddArticles(articles)
 	blg.AddTemplate(h.templates.Lookup("blog.gohtml"))
 	blg.AddTitle("Blog")
 
@@ -58,6 +49,9 @@ func (h *Handler) GetBlog(w http.ResponseWriter, r *http.Request, _ httprouter.P
 	if err != nil {
 		log.Panic(err)
 	}
+
+	completeTime := time.Now().Sub(startTime)
+	fmt.Println(completeTime)
 }
 
 func (h *Handler) GetArticle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
@@ -73,6 +67,15 @@ func (h *Handler) GetArticle(w http.ResponseWriter, r *http.Request, ps httprout
 	art := page.NewArticle(content)
 	art.AddTemplate(h.templates.Lookup("article.gohtml"))
 	art.AddSlug(slug)
+
+	articles, err := loadArticlesFromFolder("./content")
+	if err != nil {
+		log.Panic(err)
+	}
+
+	for _, relatedArticle := range articles[:3] {
+		art.AddRelated(&relatedArticle)
+	}
 
 	art.Render(w)
 	if err != nil {

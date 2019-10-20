@@ -17,23 +17,57 @@
                 <div class="highlight-white highlight"></div>
             </div>
 
-            <img class="mb-3" src="/assets/{{ .FeatureImage }}">
-
-            {{ .Body }}
-
-            <hr>
             <div class="row">
                 <div class="col">
-                    <p>Category {{.Category }} </p>
+
+                    <img class="mb-3" src="/assets/{{ .FeatureImage }}">
+
+                    {{ .Body }}
+
+                    <hr>
+                    <p>{{.Category }} | {{.Author }} @ {{ .CreatedAt }}</p>
+
                 </div>
+
                 <div class="col">
-                    <p>Author {{.Author }} </p>
-                </div>
-                <div class="col">
-                    <p>Published {{ .CreatedAt }}</p>
+                    <h4 class="mb-3">Related articles</h4>
+
+                    <ul class="list-unstyled">
+                    {{ range $article := .RelatedArticles }}
+                        <li class="mb-3"><a href="/blog/{{ .Slug }}">{{ $article.Title }}</a></li>
+                    {{ end }}
+                    </ul>
+
+                    <hr>
+
+                    <h4 class="mb-3">Social media</h4>
+
+                    <ul class="list-unstyled">
+                        <li class="mb-3"><a target="_blank" href="https://www.linkedin.com/in/mihai-blebea-87353310b/">Linkedin</a></li>
+                        <li class="mb-3"><a target="_blank" href="https://github.com/MihaiBlebea?tab=repositories">Github</a></li>
+                        <li class="mb-3"><a target="_blank" href="https://www.facebook.com/blebea.serban">Facebook</a></li>
+                    </ul>
+
                 </div>
             </div>
         </div>
+
+        <section class="bg-green py-5">
+            <div class="container">
+                <div class="fit-content mb-3">
+                    <h1 class="z-index-top position-relative mb-0 text-white">Related articles</h1>
+                    <div class="highlight-green highlight"></div>
+                </div>
+
+                <div class="row">
+                    {{ range $article := .RelatedArticles }}
+                        <div class="col">
+                            {{ template "article-card" $article }}
+                        </div>
+                    {{ end }}
+                </div>
+            </div>
+        </section>
 
         {{ template "footer" }}
     </body>

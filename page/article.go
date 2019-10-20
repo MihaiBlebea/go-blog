@@ -11,12 +11,13 @@ import (
 
 type Article struct {
 	*Page
-	Title        string
-	Category     string
-	Created      time.Time
-	Author       string
-	Slug         string
-	FeatureImage string
+	Title           string
+	Category        string
+	Created         time.Time
+	Author          string
+	Slug            string
+	FeatureImage    string
+	RelatedArticles []Article
 }
 
 func (ar *Article) Render(w io.Writer) error {
@@ -30,6 +31,10 @@ func (ar *Article) CreatedAt() string {
 
 func (ar *Article) AddSlug(slug string) {
 	ar.Slug = slug
+}
+
+func (ar *Article) AddRelated(article *Article) {
+	ar.RelatedArticles = append(ar.RelatedArticles, *article)
 }
 
 func NewArticle(content []byte) *Article {

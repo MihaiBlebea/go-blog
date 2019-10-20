@@ -1,0 +1,14 @@
+[
+    {
+        "title": "FullStack developer",
+        "startDate": "2015-Oct-02",
+        "endDate": "2017-Nov-07",
+        "description": "Worked with small and medium size companies, migrated PHP legacy applications to Node"
+    },
+    {
+        "title": "PHP developer",
+        "startDate": "2017-Jun-02",
+        "endDate": "2017-Nov-29",
+        "description": "Created and supported the custom CMS"
+    }
+]

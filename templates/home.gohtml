@@ -6,16 +6,52 @@
         {{ template "head" }}
     </head>
     <body>
-        <section class="bg-green">
-        {{ template "navigation" }}
+        <section class="bg-green pb-5">
+            <div class="container">
+                {{ template "navigation" }}
+            </div>
 
-            <div class="container my-5">
-                <div class="fit-content">
-                    <h1 class="z-index-top position-relative mb-0 text-white">Hello rom the template</h1>
+            <div class="container">
+                <div class="fit-content my-5">
+                    <h1 class="z-index-top position-relative mb-0 text-white">My name is Mihai</h1>
                     <div class="highlight-green highlight"></div>
                 </div>
 
-                <p>{{ .Body }}</p>
+                <p class="text-white">
+                    Language agnostic full stack developer.
+                </p>
+                <p class="text-white">
+                    Passionate about tech and leadership, keen to promote clean code and empower developers
+                </p>
+                <p class="text-white">
+                    Head of Fullstack engineering @ muzmatch
+                </p>
+            </div>
+        </section>
+
+        <section class="bg-white">
+            <div class="container my-5">
+
+                <div class="fit-content">
+                    <h1 class="z-index-top position-relative mb-0">Positions</h1>
+                    <div class="highlight-white highlight"></div>
+                </div>
+
+                {{ range $position := .Positions }}
+
+                    <div class="row">
+                        <div class="col-md-6 pb-3 border border-secondary border-left-0 border-top-0 border-bottom-0">
+                            {{ $position.Title }}
+                            <p class="text-muted">
+                                <small>{{ $position.StartDate }} - {{ $position.EndDate }}</small>
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            {{ $position.Description }}
+                        </div>
+                    </div>
+
+                {{ end }}
             </div>
         </section>
 

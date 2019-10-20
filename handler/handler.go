@@ -9,23 +9,20 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/julienschmidt/httprouter"
 )
 
 type Handler struct {
-	templates *template.Template
+	templates    *template.Template
+	articleCache *ArticleCache
 }
 
 func (h *Handler) GetHomepage(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	pg := page.New()
+	home := page.NewHome()
+	home.AddTemplate(h.templates.Lookup("home.gohtml"))
 
-	pg.AddTemplate(h.templates.Lookup("home.gohtml"))
-	pg.AddBody("<p>Hello from the homepage</p>")
-	pg.AddTitle("Homepage")
-
-	err := pg.Render(w)
+	err := home.Render(w)
 	if err != nil {
 		log.Panic(err)
 	}
@@ -36,7 +33,7 @@ func (h *Handler) GetBlog(w http.ResponseWriter, r *http.Request, _ httprouter.P
 
 	blg := page.NewBlog()
 
-	articles, err := loadArticlesFromFolder("./content")
+	articles, err := h.articleCache.Articles()
 	if err != nil {
 		log.Panic(err)
 	}
@@ -51,27 +48,35 @@ func (h *Handler) GetBlog(w http.ResponseWriter, r *http.Request, _ httprouter.P
 	}
 
 	completeTime := time.Now().Sub(startTime)
-	fmt.Println(completeTime)
+	fmt.Println("/blog : ", completeTime)
 }
 
 func (h *Handler) GetArticle(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
+	startTime := time.Now()
+
 	slug := ps.ByName("slug")
 
-	fileName := strings.Replace(slug, "-", "_", -1)
-	content, err := ioutil.ReadFile("./content/" + fileName + ".md")
+	// Get all the articles
+	articles, err := h.articleCache.Articles()
 	if err != nil {
+		log.Panic(err)
+	}
+
+	var art page.Article
+	found := false
+	for _, article := range articles {
+		if article.Slug == slug {
+			art = article
+			found = true
+		}
+	}
+
+	if found == false {
 		h.Get404(w, r, http.StatusNotFound)
 		return
 	}
 
-	art := page.NewArticle(content)
 	art.AddTemplate(h.templates.Lookup("article.gohtml"))
-	art.AddSlug(slug)
-
-	articles, err := loadArticlesFromFolder("./content")
-	if err != nil {
-		log.Panic(err)
-	}
 
 	for _, relatedArticle := range articles[:3] {
 		art.AddRelated(&relatedArticle)
@@ -81,6 +86,9 @@ func (h *Handler) GetArticle(w http.ResponseWriter, r *http.Request, ps httprout
 	if err != nil {
 		log.Panic(err)
 	}
+
+	completeTime := time.Now().Sub(startTime)
+	fmt.Println("/article : ", completeTime)
 }
 
 func (h *Handler) GetContact(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
@@ -121,5 +129,26 @@ func (h *Handler) GetAsset(w http.ResponseWriter, r *http.Request, ps httprouter
 }
 
 func New(templates *template.Template) *Handler {
-	return &Handler{templates}
+	articleCache := NewArticleCache("./content/articles")
+
+	go func() {
+		ticker := time.NewTicker(time.Minute * 3)
+
+		for {
+			tempCache := NewArticleCache("./content/articles")
+			tempCache.Articles()
+
+			articleCache.Mutex.Lock()
+			articleCache.Cache = tempCache.Cache
+			articleCache.CacheExpiration = tempCache.CacheExpiration
+			articleCache.Mutex.Unlock()
+
+			<-ticker.C
+		}
+	}()
+
+	return &Handler{
+		templates,
+		articleCache,
+	}
 }
